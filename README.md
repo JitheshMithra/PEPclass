@@ -1,4 +1,4 @@
-# Peptide Classification Project
+# PEPclass - Peptide Classification Project
 
 Build a multi-label peptide activity classifier.
 
