@@ -14,7 +14,7 @@ Structure: End-to-end distance, radius of gyration, average B-factor
 ## Installation 
 ```bash
 git clone https://github.com/JitheshMithra/PepClass
-cd Pepclass/src
+cd Pepclass
 pip install -r requirements.txt
 ```
 ## Training
