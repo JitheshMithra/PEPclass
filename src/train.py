@@ -67,6 +67,37 @@ plt.tight_layout()
 plt.savefig('../results/threshold_plot.png')
 print("Threshold plot saved")
 
+from sklearn.metrics import roc_auc_score, roc_curve
+#f1 plot
+f1perclass=[]
+for i in range(len(classes)):
+    f1= f1_score(Ytest[:,i], yprediction[:,i])
+    f1perclass.append(f1)
+    
+plt.figure(figsize=(10,6))
+plt.barh(classes, f1perclass, color='steelblue')
+plt.xlabel('F1 Score')
+plt.title('F1 Score per Class - PEPclass')
+plt.xlim(0,1)
+plt.tight_layout()
+plt.savefig('../results/f1_plot.png')
+print("F1 plot saved")
+#AUC plot
+plt.figure(figsize=(10,6))
+for i, cls in enumerate(classes):
+    if len(np.unique(Ytest[:,i])) >1:
+        fpr, tpr, _= roc_curve(Ytest[:,i], yprobs[:,i])
+        auc=roc_auc_score(Ytest[:,i], yprobs[:,i])
+        plt.plot(fpr, tpr, label=f"{cls} (AUC: {auc:.2f})")
+plt.plot([0,1], [0,1], 'k--')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curves - PEPclass')
+plt.legend(loc = 'lower right', fontsize='small')
+plt.tight_layout()
+plt.savefig('../results/auc_plot.png')
+print("AUC plot saved")
+
 #cross fold validation
 from sklearn.model_selection import cross_val_score
 cvscores= cross_val_score(model, X, Y, cv=5, scoring='f1_macro')
