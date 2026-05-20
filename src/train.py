@@ -19,7 +19,7 @@ classes= ['antibacterial', 'anticancer', 'antifungal', 'antihypertensive', 'anti
 #extract features
 def getallfeatures(row, pdbfolder):
     seqfeatures=getsequencefeatures(row['sequence'])
-    pdbfile=os.path.join(pdbfolder, row['ID']+"pdb")
+    pdbfile=os.path.join(pdbfolder, row['ID']+".pdb")
     if os.path.exists(pdbfile):
         structfeatures= getstructurefeatures(pdbfile)
     else:
@@ -44,4 +44,12 @@ print(classification_report(Ytest, yprediction, target_names=classes))
 
 #saving and a cool message that says that its saved
 joblib.dump(model, '../models/structuremodel.pkl')
-print("it saved dont worry")
+print("structure and sequence model saved")
+
+# train and save sequence only model
+Xseq = dataframe['sequence'].apply(getsequencefeatures).tolist()
+Xseqtrain, Xseqtest, Yseqtrain, Yseqtest = train_test_split(Xseq, Y, test_size=0.2, random_state=42)
+seqmodel = MultiOutputClassifier(RandomForestClassifier(n_estimators=100, random_state=42, class_weight='balanced'))
+seqmodel.fit(Xseqtrain, Yseqtrain)
+joblib.dump(seqmodel, '../models/sequencemodel.pkl')
+print("sequence model saved")
