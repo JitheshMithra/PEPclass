@@ -1,6 +1,8 @@
 #idk if i have to explain all the imports and my reason behind them but that will be worried about later
 import sqlite3
+import os
 import pandas as pd
+from features import getstructurefeatures
 from features import getsequencefeatures
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.multioutput import MultiOutputClassifier
@@ -15,7 +17,16 @@ connect.close()
 #defining the classes
 classes= ['antibacterial', 'anticancer', 'antifungal', 'antihypertensive', 'antiviral', 'antiparasitic', 'antimicrobial', 'drug_delivery_vehicle', 'toxic', 'cell_cell_communication']
 #extract features
-X= dataframe['sequence'].apply(getsequencefeatures).tolist()
+def getallfeatures(row, pdbfolder):
+    seqfeatures=getsequencefeatures(row['sequence'])
+    pdbfile=os.path.join(pdbfolder, row['ID']+"pdb")
+    if os.path.exists(pdbfile):
+        structfeatures= getstructurefeatures(pdbfile)
+    else:
+        structfeatures=[0]*3
+    return seqfeatures+ structfeatures
+pdbfolder="../data/pdb"
+X=dataframe.apply(lambda row: getallfeatures(row, pdbfolder), axis=1).tolist()
 Y=dataframe[classes].values
 
 #split
@@ -32,5 +43,5 @@ print(f"Macro F1 Score: {macrof1:.4f}")
 print(classification_report(Ytest, yprediction, target_names=classes))
 
 #saving and a cool message that says that its saved
-joblib.dump(model, '../models/sequencemodel.pkl')
+joblib.dump(model, '../models/structuremodel.pkl')
 print("it saved dont worry")
