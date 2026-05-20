@@ -28,7 +28,10 @@ for pdbfile in pdbfiles:
     fullpath=os.path.join(testpdbfolder, pdbfile)
     sequence=getsequencefrompdb(fullpath)
     features=[getsequencefeatures(sequence)]
-    preds=seqmodel.predict(features)[0]
+    probs=[]
+    for i in seqmodel.estimators_:
+        probs.append(i.predict_proba(features)[:,1][0])
+    preds=[1 if p >= 0.15 else 0 for p in probs]
     row={'ID': peptideid}
     for i, cls in enumerate(classes):
         row[cls]=int(preds[i])
@@ -48,7 +51,10 @@ for pdbfile in pdbfiles:
     seqfeatures=getsequencefeatures(sequence)
     structfeatures=getstructurefeatures(fullpath)
     features=[seqfeatures+structfeatures]
-    preds=structmodel.predict(features)[0]
+    probs=[]
+    for i in structmodel.estimators_:
+        probs.append(i.predict_proba(features)[:,1][0])
+    preds=[1 if p >= 0.15 else 0 for p in probs]
     row={'ID': peptideid}
     for i, cls in enumerate(classes):
         row[cls]=int(preds[i])
