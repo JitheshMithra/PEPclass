@@ -11,7 +11,7 @@ Sequence: Amino Acid Composition, length, charge, hydrophobicity
 
 Structure: End-to-end distance, radius of gyration, average B-factor
 
-## Installation 
+## Installation and training
 ```bash
 git clone https://github.com/JitheshMithra/PepClass
 cd Pepclass
