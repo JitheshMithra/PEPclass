@@ -34,7 +34,7 @@ Y=dataframe[classes].values
 #split
 Xtrain, Xtest, Ytrain, Ytest=train_test_split(X, Y, test_size=0.2, random_state=42)
 #train
-model=MultiOutputClassifier(RandomForestClassifier(n_estimators=100, random_state=42, class_weight='balanced'))
+model=MultiOutputClassifier(RandomForestClassifier(n_estimators=80, random_state=42, class_weight='balanced'))
 model.fit(Xtrain, Ytrain)
 #evaluate the model and get the f1 score and report 
 yprediction = model.predict(Xtest)
@@ -98,6 +98,24 @@ plt.tight_layout()
 plt.savefig('../results/auc_plot.png')
 print("AUC plot saved")
 
+#oob error plot
+ooberrors=[]
+treerange=range(10,150,10)
+for i in treerange:
+    tempmodel=RandomForestClassifier(n_estimators=i,random_state=42,class_weight="balanced", oob_score=True)
+    tempmodel.fit(Xtrain, Ytrain[:,6]) #antimicrobial as the rep class
+    ooberrors.append(1- tempmodel.oob_score_)
+    
+plt.figure(figsize=(8,5))
+plt.plot(list(treerange), ooberrors, marker='o')
+plt.xlabel('Number of Trees')
+plt.ylabel('OOB Error Rate')
+plt.title('OOB Error vs Number of Trees - PepClass')
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('../results/oob_curve.png')
+print("OOB plot saved")
+    
 #cross fold validation
 from sklearn.model_selection import cross_val_score
 cvscores= cross_val_score(model, X, Y, cv=5, scoring='f1_macro')
@@ -115,7 +133,7 @@ print("structure and sequence model saved")
 # train and save sequence only model
 Xseq = dataframe['sequence'].apply(getsequencefeatures).tolist()
 Xseqtrain, Xseqtest, Yseqtrain, Yseqtest = train_test_split(Xseq, Y, test_size=0.2, random_state=42)
-seqmodel = MultiOutputClassifier(RandomForestClassifier(n_estimators=100, random_state=42, class_weight='balanced'))
+seqmodel = MultiOutputClassifier(RandomForestClassifier(n_estimators=80, random_state=42, class_weight='balanced'))
 seqmodel.fit(Xseqtrain, Yseqtrain)
 joblib.dump(seqmodel, '../models/sequencemodel.pkl')
 print("sequence model saved")
