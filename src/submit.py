@@ -6,9 +6,7 @@ from features import getsequencefeatures, getstructurefeatures
 import warnings
 warnings.filterwarnings('ignore')
 
-classes=['antibacterial','anticancer','antifungal','antihypertensive',
-         'antimicrobial','antiparasitic','antiviral','cell_cell_communication',
-         'drug_delivery_vehicle','toxic']
+classes=['antibacterial','anticancer','antifungal','antihypertensive', 'antimicrobial','antiparasitic','antiviral','cell_cell_communication', 'drug_delivery_vehicle','toxic']
 
 def getsequencefrompdb(pdbfile):
     parser=PDBParser()
