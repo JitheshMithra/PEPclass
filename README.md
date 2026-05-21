@@ -42,7 +42,7 @@ python submit.py
 - Cross validated Macro F1: 0.29
 - Optimal threshold: 0.15 (determined via threshold tradeoff plot analysis)
 - Best performing class: antimicrobial (F1 = 0.84)
-- Weakest classes: antiparasitic, antihypertensive, cell_cell_communication (F1 = 0.00-0.09, class imbalance)
+- Weakest classes: antiparasitic, antihypertensive, cell_cell_communication, antifungal (F1 = 0.00-0.09, class imbalance)
 
 ## Figures
 - results/threshold_plot.png: Optimal threshold analysis
